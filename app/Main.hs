@@ -1,14 +1,14 @@
-
 module Main where
-
 import Control.Concurrent
 import Data.List
+import Graphics.Gloss
 
 stringProc :: [String] -> [[Int]]
 stringProc = addToBlank . map (map read . words)
 
 blankScreen :: [[Int]]
-blankScreen = replicate 37 $ replicate 87 0
+blankScreen = replicate 48  $ replicate 213 0
+
 
 padToInf :: [[Int]] -> [[Int]]
 padToInf = flip (++) (repeat $ repeat 0) . map (++ repeat 0) 
@@ -17,16 +17,17 @@ addToBlank :: [[Int]] -> [[Int]]
 addToBlank a = sum2D blankScreen $ padToInf a
 
 toUnicode :: Int -> Char
-toUnicode 0 = '░'
+-- toUnicode 0 = '░'
+toUnicode 0 = ' '
 toUnicode _ = '█'
 
 putArr :: ([[Int]], Int) -> IO ()
 putArr (a,b) = do
   putStr "\x1B[?25l\x1B[H"
-  putStr $ unlines $ map (Prelude.concatMap (replicate 2 . toUnicode)) a
+  putStr $ unlines $ map (Prelude.concatMap (replicate 1 . toUnicode)) a
   print b
   putStr "\x1B[?25h"
-  threadDelay 1
+  -- threadDelay 1
   -- threadDelay $ div 1000000 fps 
 
 rotate2D :: Int -> Int -> [[Int]] -> [[Int]]
@@ -98,6 +99,14 @@ jaydot  = stringProc [
   , "0 0 1 0 0"
   , "0 0 1 1 0"
   , "0 1 0 0 0"
+  ]
+jaydotR :: [[Int]]
+jaydotR  = stringProc [
+    "0 0 0 0 0 0"
+  , "1 0 0 0 1 0"
+  , "0 1 1 0 1 1"
+  , "0 1 0 0 1 1"
+  , "0 0 0 0 0 0"
   ]
 
 
@@ -193,10 +202,22 @@ stillLife19 = stringProc [
 --runGame :: [[Int]] -> IO ()
 runGame = mapM_ putArr . runGame'
 runGame' :: [[Int]] -> [([[Int]], Int)]
-runGame' = (flip zip [0..]) . (++ [blankScreen]) . takeWhile ((>0) . sumOfBoard) . iterate step . rotate2D 30 15 
+runGame' = flip zip [0..] . (++ [blankScreen]) . takeWhile ((>0) . sumOfBoard) . iterate step . rotate2D 100 20 
   where sumOfBoard = sum . map sum
 
-fps = 25 :: Int
+fps = 55 :: Int
 
 main :: IO ()
-main = runGame dieHard 
+main = runGame infinite2 
+
+-- Gloss Drawing
+
+--main = display window background drawing 
+
+window :: Display
+window = InWindow "Conway's Game of Life" (1920, 1080) (10,10)
+
+background :: Color
+background = makeColorI 15 15 15 255
+
+drawing = Circle 80
