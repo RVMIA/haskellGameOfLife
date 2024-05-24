@@ -1,13 +1,13 @@
 module Main where
 import Control.Concurrent
 import Data.List
-import Graphics.Gloss
+-- import Graphics.Gloss
 
 stringProc :: [String] -> [[Int]]
 stringProc = addToBlank . map (map read . words)
 
 blankScreen :: [[Int]]
-blankScreen = replicate 48  $ replicate 213 0
+blankScreen = replicate 60  $ replicate 230 0
 
 
 padToInf :: [[Int]] -> [[Int]]
@@ -208,16 +208,16 @@ runGame' = flip zip [0..] . (++ [blankScreen]) . takeWhile ((>0) . sumOfBoard) .
 fps = 55 :: Int
 
 main :: IO ()
-main = runGame infinite2 
+main = runGame jaydot
 
 -- Gloss Drawing
 
 --main = display window background drawing 
 
-window :: Display
-window = InWindow "Conway's Game of Life" (1920, 1080) (10,10)
+-- window :: Display
+-- window = InWindow "Conway's Game of Life" (1920, 1080) (10,10)
 
-background :: Color
-background = makeColorI 15 15 15 255
+-- background :: Color
+-- background = makeColorI 15 15 15 255
 
-drawing = Circle 80
+-- drawing = Circle 80
